@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 인식</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>수어 인식</h1>
+            <a href="/" class="home-btn">홈으로</a>
+        </header>
+        
+        <div class="recognition-container">
+            <div class="camera-section">
+                <div class="video-wrapper">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn">웹캠 시작</button>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-card">
+                    <h2>인식 결과</h2>
+                    <div id="result-char">-</div>
+                    <div id="confidence">신뢰도: 0%</div>
+                </div>
+                
+                <div class="actions">
+                    <button id="add-btn" disabled>문장에 추가</button>
+                    <a href="/sentence" class="btn">문장 완성 페이지로</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>사용 방법</h3>
+            <ol>
+                <li>"웹캠 시작" 버튼을 클릭하세요</li>
+                <li>카메라 앞에서 수어 동작을 취하세요</li>
+                <li>인식된 문자를 확인하고 "문장에 추가" 버튼을 클릭하세요</li>
+                <li>"문장 완성 페이지로" 버튼을 클릭해 완성된 문장을 확인하세요</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/recognition.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 문장 완성</title>
+    <style>
+        /* 기존 스타일 유지 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* 헤더 스타일 */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-right: 15px;
+            border-radius: 10px;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-btn {
+            padding: 10px 25px;
+            background: #3498db;
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .back-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* 메인 콘텐츠 */
+        .sentence-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+            animation: slideUp 0.8s ease;
+        }
+        
+        .sentence-display {
+            min-height: 100px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px dashed #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-all;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .sentence-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .control-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .save-btn {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .backspace-btn {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .reset-btn:hover, .save-btn:hover, .backspace-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .recognition-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        #video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transform: scaleX(-1); /* 미러 효과 */
+        }
+        
+        .recognition-result {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            width: 100%;
+            max-width: 640px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .prediction {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .confidence-level {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .confidence-text {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .add-btn {
+            margin-top: 20px;
+            padding: 12px 35px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .add-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .add-btn:hover:not(:disabled) {
+            background: #2980b9;
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .camera-guide {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border: 1px solid #ffeeba;
+            max-width: 640px;
+        }
+        
+        .guide-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .guide-list {
+            text-align: left;
+            padding-left: 20px;
+        }
+        
+        .guide-list li {
+            margin-bottom: 5px;
+        }
+        
+        /* 상태 표시기 */
+        .status-indicator {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #e9f7fe;
+            font-size: 1rem;
+            min-height: 40px;
+        }
+        
+        /* 푸터 */
+        .footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .logo-container {
+                justify-content: center;
+            }
+            
+            .sentence-container {
+                padding: 25px;
+            }
+            
+            .sentence-display {
+                font-size: 1.8rem;
+            }
+            
+            .sentence-controls {
+                flex-direction: column;
+            }
+            
+            .control-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='image/logo.png') }}" alt="수어 학습 플랫폼 로고" class="logo">
+                <h1 class="page-title">수어 문장 완성</h1>
+            </div>
+            <a href="/" class="back-btn">메인으로</a>
+        </div>
+        
+        <div class="sentence-container">
+            <!-- 현재 완성된 문장 표시 영역 -->
+            <div class="sentence-display" id="sentenceDisplay">
+                {{ sentence if sentence else '문장을 만들어 보세요!' }}
+            </div>
+            
+            <!-- 문장 제어 버튼 -->
+            <div class="sentence-controls">
+                <button class="control-btn reset-btn" id="resetBtn">초기화</button>
+                <button class="control-btn backspace-btn" id="backspaceBtn">지우기</button>
+                <button class="control-btn save-btn" id="saveBtn">문장 저장</button>
+            </div>
+            
+            <!-- 수어 인식 영역 -->
+            <div class="recognition-section">
+                <div class="video-container">
+                    <video id="video" width="640" height="480" autoplay playsinline></video>
+                </div>
+                
+                <div class="recognition-result">
+                    <h2 class="result-title">인식 결과</h2>
+                    <div class="prediction" id="predictionResult">카메라 초기화 중...</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-level" id="confidenceBar"></div>
+                    </div>
+                    <div class="confidence-text" id="confidenceText">신뢰도: 0%</div>
+                    <button class="add-btn" id="addBtn" disabled>문장에 추가</button>
+                    <div class="status-indicator" id="statusIndicator">조합 상태: 초기 상태</div>
+                </div>
+                
+                <div class="camera-guide">
+                    <div class="guide-title">손 인식 안내:</div>
+                    <ul class="guide-list">
+                        <li>카메라를 30-50cm 거리에서 사용하세요</li>
+                        <li>조명이 충분한 환경에서 사용하세요</li>
+                        <li>손가락을 최대한 펼치고 정면을 향하도록 하세요</li>
+                        <li>배경에 방해되는 물체가 없도록 하세요</li>
+                        <li>종성 후 새 글자 입력시 초성부터 다시 입력하세요</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 -->
+        <div class="footer">
+            <p>© 2025 수어 인식 플랫폼. 모든 권리 보유.</p>
+        </div>
+    </div>
+    
+    <script>
+        // 비디오 요소 가져오기
+        const video = document.getElementById('video');
+        const addBtn = document.getElementById('addBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        let isCameraInitialized = false;
+        let recognitionActive = false;
+        
+        // 자모 조합을 위한 상태 변수
+        let currentJamos = []; // 현재 입력 중인 자모 저장
+        let completedSyllables = []; // 완성된 음절 저장
+
+        // 자모 분류
+        const CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+        const VOWELS = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+
+        // 자모 조합 함수 (Lookahead 방식)
+        function combineJamos(jamosList) {
+            if (jamosList.length === 0) return '';
+
+            const CHOSUNGS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+            const JUNGSUNGS = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+            const JONGSUNGS = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+            let cho = '';
+            let jung = '';
+            let jong = '';
+            let result = '';
+
+            for (let i = 0; i < jamosList.length; i++) {
+                const jamo = jamosList[i];
+                const nextJamo = jamosList[i + 1] || '';
+                const isConsonant = CONSONANTS.includes(jamo);
+                const isVowel = VOWELS.includes(jamo);
+
+                if (isConsonant) {
+                    if (cho === '') {
+                        cho = jamo;
+                    } else if (jung !== '' && jong === '') {
+                        if (VOWELS.includes(nextJamo)) {
+                            // 다음이 모음 → 현재 자음은 초성
+                            result += makeSyllable(cho, jung, '');
+                            cho = jamo;
+                            jung = '';
+                            jong = '';
+                        } else {
+                            // 종성 후보
+                            if (JONGSUNGS.includes(jamo)) {
+                                jong = jamo;
+                            } else {
+                                result += makeSyllable(cho, jung, '');
+                                cho = jamo;
+                                jung = '';
+                                jong = '';
+                            }
+                        }
+                    } else if (jung !== '' && jong !== '') {
+                        result += makeSyllable(cho, jung, jong);
+                        cho = jamo;
+                        jung = '';
+                        jong = '';
+                    } else {
+                        // 초성 교체
+                        result += cho;
+                        cho = jamo;
+                    }
+                } else if (isVowel) {
+                    if (jung === '') {
+                        jung = jamo;
+                    } else {
+                        result += makeSyllable(cho, jung, jong);
+                        cho = '';
+                        jung = jamo;
+                        jong = '';
+                    }
+                }
+            }
+
+            result += makeSyllable(cho, jung, jong);
+            return result;
+        }
+
+        // 음절 생성 함수
+        function makeSyllable(cho, jung, jong) {
+            const CHOSUNGS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+            const JUNGSUNGS = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+            const JONGSUNGS = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+            if (!cho || !jung) {
+                return (cho || '') + (jung || '') + (jong || '');
+            }
+
+            const choIdx = CHOSUNGS.indexOf(cho);
+            const jungIdx = JUNGSUNGS.indexOf(jung);
+            const jongIdx = JONGSUNGS.indexOf(jong || '');
+
+            if (choIdx === -1 || jungIdx === -1 || jongIdx === -1) {
+                return cho + jung + (jong || '');
+            }
+
+            const codePoint = 0xAC00 + (choIdx * 21 * 28) + (jungIdx * 28) + jongIdx;
+            return String.fromCodePoint(codePoint);
+        }
+        
+        // 문장 표시 업데이트 함수
+        function updateSentenceDisplay() {
+            const sentenceDisplay = document.getElementById('sentenceDisplay');
+            
+            // 완성된 음절과 현재 입력 중인 자모를 조합하여 표시
+            const combinedSyllable = combineJamos(currentJamos);
+            const fullSentence = completedSyllables.join('') + combinedSyllable;
+            
+            sentenceDisplay.textContent = fullSentence || '문장을 만들어 보세요!';
+        }
+        
+        // 카메라 초기화
+        async function initCamera() {
+            try {
+                // 다양한 카메라 설정 시도
+                const constraints = {
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: 'user',
+                        frameRate: { ideal: 15 }  // 낮은 프레임 레이트로 변경
+                    } 
+                };
+                
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = stream;
+                isCameraInitialized = true;
+                
+                // 비디오 메타데이터 로드 기다림
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        video.play().then(resolve).catch(console.error);
+                    };
+                });
+                
+                console.log("카메라 초기화 성공");
+                return true;
+            } catch (error) {
+                console.error('카메라 접근 오류:', error);
+                document.getElementById('predictionResult').textContent = '카메라 접근 실패';
+                document.getElementById('predictionResult').style.color = '#e74c3c';
+                alert('카메라에 접근할 수 없습니다. 카메라 접근 권한을 확인해주세요.');
+                return false;
+            }
+        }
+        
+        // 인식 결과 업데이트 함수
+        function updateRecognitionResult(prediction, confidence) {
+            const predictionResult = document.getElementById('predictionResult');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceText = document.getElementById('confidenceText');
+            
+            if (prediction) {
+                predictionResult.textContent = prediction;
+                predictionResult.style.color = '#3498db';
+                
+                const confidencePercent = Math.round(confidence * 100);
+                confidenceBar.style.width = `${confidencePercent}%`;
+                confidenceText.textContent = `신뢰도: ${confidencePercent}%`;
+                
+                // 신뢰도에 따라 막대 색상 변경
+                if (confidencePercent > 70) {
+                    confidenceBar.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+                } else if (confidencePercent > 40) {
+                    confidenceBar.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+                } else {
+                    confidenceBar.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+                }
+                
+                // 신뢰도가 40% 이상이면 버튼 활성화
+                addBtn.disabled = confidencePercent < 40;
+            } else {
+                predictionResult.textContent = '손을 인식하지 못했습니다';
+                predictionResult.style.color = '#e74c3c';
+                confidenceBar.style.width = '0%';
+                confidenceText.textContent = '신뢰도: 0%';
+                confidenceBar.style.background = '#ecf0f1';
+                addBtn.disabled = true;
+            }
+        }
+        
+        // 주기적으로 프레임 인식 요청
+        let lastSent = 0;
+        const interval = 800; // 0.8초 간격으로 변경
+        
+        async function recognizeFrame() {
+            if (!recognitionActive) return;
+            
+            if (!isCameraInitialized || video.readyState < 2) {
+                requestAnimationFrame(recognizeFrame);
+                return;
+            }
+            
+            const now = Date.now();
+            if (now - lastSent < interval) {
+                requestAnimationFrame(recognizeFrame);
+                return;
+            }
+            lastSent = now;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                
+                // 미러 효과 적용
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // 캔버스에서 이미지 데이터 추출
+                const imageData = canvas.toDataURL('image/jpeg', 0.9); // 품질 향상
+                
+                // 서버에 인식 요청
+                const response = await fetch('/recognize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData })
+                });
+                
+                if (!response.ok) throw new Error('서버 응답 오류');
+                
+                const data = await response.json();
+                if (data.error) {
+                    console.error('인식 오류:', data.error);
+                    updateRecognitionResult(null, 0);
+                } else {
+                    updateRecognitionResult(data.prediction, data.confidence);
+                }
+            } catch (error) {
+                console.error('요청 오류:', error);
+                updateRecognitionResult(null, 0);
+            }
+            
+            requestAnimationFrame(recognizeFrame);
+        }
+        
+        // 카메라 초기화 및 인식 시작
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('predictionResult').textContent = '카메라 초기화 중...';
+            
+            // 카메라 초기화 시도
+            const success = await initCamera();
+            if (success) {
+                recognitionActive = true;
+                recognizeFrame();
+            }
+            
+            // 초기 문장 상태 설정
+            updateSentenceDisplay();
+        });
+        
+        // 문장에 추가 버튼 클릭 이벤트
+        addBtn.addEventListener('click', function() {
+            const prediction = document.getElementById('predictionResult').textContent;
+            
+            if (prediction && prediction !== '손을 인식하지 못했습니다' && prediction !== '카메라 초기화 중...') {
+                // 자음 또는 모음 추가
+                currentJamos.push(prediction);
+                
+                // 화면 업데이트
+                updateSentenceDisplay();
+                
+                // 서버에 추가 요청 (선택적)
+                fetch('/add_to_sentence', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ char: prediction })
+                });
+                
+                // 추가 성공 애니메이션
+                const display = document.getElementById('sentenceDisplay');
+                display.style.transform = 'scale(1.05)';
+                display.style.color = '#2ecc71';
+                setTimeout(() => {
+                    display.style.transform = 'scale(1)';
+                    display.style.color = '';
+                }, 300);
+            }
+        });
+        
+        // 초기화 버튼 클릭 이벤트
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            if (confirm('정말 문장을 초기화하시겠습니까?')) {
+                // 클라이언트 상태 초기화
+                currentJamos = [];
+                completedSyllables = [];
+                updateSentenceDisplay();
+                
+                // 서버에 초기화 요청
+                fetch('/reset_sentence', {
+                    method: 'POST'
+                });
+                
+                statusIndicator.textContent = '조합 상태: 초기화됨';
+            }
+        });
+        
+        // 지우기 버튼 클릭 이벤트
+        document.getElementById('backspaceBtn').addEventListener('click', function() {
+            if (currentJamos.length > 0) {
+                currentJamos.pop();
+                updateSentenceDisplay();
+                statusIndicator.textContent = '조합 상태: 마지막 입력 취소';
+            } else if (completedSyllables.length > 0) {
+                completedSyllables.pop();
+                updateSentenceDisplay();
+                statusIndicator.textContent = '조합 상태: 마지막 음절 삭제';
+            }
+        });
+        
+        // 저장 버튼 클릭 이벤트
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            // 완성된 문장 생성
+            const combinedSyllable = combineJamos(currentJamos);
+            const fullSentence = completedSyllables.join('') + combinedSyllable;
+            
+            if (!fullSentence) {
+                alert('저장할 문장이 없습니다.');
+                return;
+            }
+            
+            // 서버에 저장 요청
+            fetch('/save_sentence', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sentence: fullSentence })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`문장이 ${data.filename} 파일로 저장되었습니다.`);
+                } else {
+                    alert('저장 실패: ' + data.error);
+                }
+            });
+        });
+        
+        // 페이지 언로드 시 카메라 정지
+        window.addEventListener('beforeunload', () => {
+            recognitionActive = false;
+            if (video.srcObject) {
+                const tracks = video.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>

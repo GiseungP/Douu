@@ -1,0 +1,590 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 추가</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* 헤더 스타일 */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-right: 15px;
+            border-radius: 10px;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-btn {
+            padding: 10px 25px;
+            background: #3498db;
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .back-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* 메인 콘텐츠 */
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 40px;
+            animation: slideUp 0.8s ease;
+        }
+        
+        .form-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .upload-option {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .option-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            background: #f8f9fa;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        .option-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .option-btn:hover {
+            background: #e3f2fd;
+        }
+        
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            background: #e3f2fd;
+            transform: translateY(-5px);
+            border-color: #2980b9;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .file-types {
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 100%;
+        }
+        
+        #previewVideo {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            background: #f0f0f0;
+            margin-bottom: 15px;
+        }
+        
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        #cameraPreview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .record-btn {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .record-btn:hover {
+            background: #c0392b;
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .stop-btn {
+            background: #2c3e50;
+            color: white;
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+        }
+        
+        .stop-btn:hover {
+            background: #1a252f;
+            box-shadow: 0 6px 15px rgba(44, 62, 80, 0.4);
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .submit-btn:hover {
+            background: #27ae60;
+            transform: scale(1.02);
+            box-shadow: 0 7px 20px rgba(46, 204, 113, 0.4);
+        }
+        
+        /* 푸터 */
+        .footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .logo-container {
+                justify-content: center;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .upload-option {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='image/logo.png') }}" alt="수어 학습 플랫폼 로고" class="logo">
+                <h1 class="page-title">수어 추가</h1>
+            </div>
+            <a href="/" class="back-btn">메인으로</a>
+        </div>
+        
+        <div class="form-container">
+            <h2 class="form-title">새로운 수어 등록</h2>
+            
+            <form id="addSignForm">
+                <div class="form-group">
+                    <label for="signWord">수어 단어</label>
+                    <input type="text" id="signWord" name="word" placeholder="추가할 수어 단어를 입력하세요 (예: 안녕)" required>
+                </div>
+                
+                <!-- 업로드 방식 선택 -->
+                <div class="form-group">
+                    <label>동영상 업로드 방식</label>
+                    <div class="upload-option">
+                        <div class="option-btn" id="cameraOption">실시간 촬영</div>
+                        <div class="option-btn active" id="fileOption">파일 업로드</div>
+                    </div>
+                </div>
+                
+                <!-- 파일 업로드 섹션 -->
+                <div class="upload-section" id="fileUploadSection">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">동영상을 드래그 앤 드롭하거나 클릭하여 선택하세요</div>
+                        <div class="file-types">(MP4, AVI, MOV 파일 지원)</div>
+                    </div>
+                    <input type="file" id="signFile" class="file-input" accept="video/*" name="file">
+                    <div class="preview-container" id="previewContainer">
+                        <video id="previewVideo" controls class="video-preview"></video>
+                    </div>
+                </div>
+                
+                <!-- 실시간 촬영 섹션 (초기에는 숨김) -->
+                <div class="upload-section" id="cameraSection" style="display: none;">
+                    <div class="camera-container">
+                        <video id="cameraPreview" autoplay playsinline></video>
+                    </div>
+                    <div class="camera-controls">
+                        <button type="button" class="control-btn record-btn" id="recordBtn">녹화 시작</button>
+                        <button type="button" class="control-btn stop-btn" id="stopBtn" disabled>녹화 중지</button>
+                    </div>
+                    <div class="preview-container" id="recordedPreview" style="display: none;">
+                        <video id="recordedVideo" controls class="video-preview"></video>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">수어 등록하기</button>
+            </form>
+        </div>
+        
+        <!-- 푸터 -->
+        <div class="footer">
+            <p>© 2025 수어 인식 플랫폼. 모든 권리 보유.</p>
+        </div>
+    </div>
+    
+    <script>
+        // 업로드 방식 선택
+        const cameraOption = document.getElementById('cameraOption');
+        const fileOption = document.getElementById('fileOption');
+        const cameraSection = document.getElementById('cameraSection');
+        const fileUploadSection = document.getElementById('fileUploadSection');
+        
+        cameraOption.addEventListener('click', () => {
+            cameraOption.classList.add('active');
+            fileOption.classList.remove('active');
+            cameraSection.style.display = 'block';
+            fileUploadSection.style.display = 'none';
+        });
+        
+        fileOption.addEventListener('click', () => {
+            fileOption.classList.add('active');
+            cameraOption.classList.remove('active');
+            fileUploadSection.style.display = 'block';
+            cameraSection.style.display = 'none';
+        });
+        
+        // 파일 업로드 영역 클릭 이벤트
+        document.getElementById('uploadArea').addEventListener('click', function() {
+            document.getElementById('signFile').click();
+        });
+        
+        // 파일 선택 이벤트
+        document.getElementById('signFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('video/')) {
+                const previewContainer = document.getElementById('previewContainer');
+                const previewVideo = document.getElementById('previewVideo');
+                
+                const url = URL.createObjectURL(file);
+                previewVideo.src = url;
+                previewContainer.style.display = 'block';
+            }
+        });
+        
+        // 웹캠 접근
+        const cameraPreview = document.getElementById('cameraPreview');
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const recordedVideo = document.getElementById('recordedVideo');
+        const recordedPreview = document.getElementById('recordedPreview');
+        
+        let mediaRecorder;
+        let recordedChunks = [];
+        
+        // 웹캠 시작
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 } 
+                    }, 
+                    audio: false 
+                });
+                cameraPreview.srcObject = stream;
+            } catch (err) {
+                console.error('웹캠 접근 오류:', err);
+                alert('웹캠에 접근할 수 없습니다. 브라우저 설정을 확인해주세요.');
+            }
+        }
+        
+        // 녹화 시작
+        recordBtn.addEventListener('click', async () => {
+            try {
+                const stream = cameraPreview.srcObject;
+                recordedChunks = [];
+                
+                mediaRecorder = new MediaRecorder(stream, { 
+                    mimeType: 'video/webm;codecs=vp9' 
+                });
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    recordedVideo.src = url;
+                    recordedPreview.style.display = 'block';
+                };
+                
+                mediaRecorder.start();
+                recordBtn.disabled = true;
+                stopBtn.disabled = false;
+                
+                // 10초 후 자동 중지
+                setTimeout(() => {
+                    if (mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        recordBtn.disabled = false;
+                        stopBtn.disabled = true;
+                    }
+                }, 10000);
+                
+            } catch (err) {
+                console.error('녹화 오류:', err);
+                alert('동영상 녹화에 실패했습니다.');
+            }
+        });
+        
+        // 녹화 중지
+        stopBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                recordBtn.disabled = false;
+                stopBtn.disabled = true;
+            }
+        });
+        
+        // 폼 제출 이벤트
+        document.getElementById('addSignForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 단어 입력 확인
+            const word = document.getElementById('signWord').value;
+            if (!word) {
+                alert('수어 단어를 입력해주세요.');
+                return;
+            }
+            
+            // 업로드 방식에 따라 데이터 처리
+            if (cameraOption.classList.contains('active')) {
+                // 실시간 촬영 방식
+                if (recordedChunks.length === 0) {
+                    alert('먼저 동영상을 녹화해주세요.');
+                    return;
+                }
+                
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const formData = new FormData();
+                formData.append('word', word);
+                formData.append('file', blob, 'recorded-video.webm');
+                
+                submitFormData(formData);
+                
+            } else {
+                // 파일 업로드 방식
+                const fileInput = document.getElementById('signFile');
+                if (!fileInput.files[0]) {
+                    alert('동영상 파일을 선택해주세요.');
+                    return;
+                }
+                
+                const formData = new FormData(this);
+                submitFormData(formData);
+            }
+        });
+        
+        // 폼 데이터 서버 전송
+        function submitFormData(formData) {
+            fetch('/add_sign', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('addSignForm').reset();
+                    document.getElementById('previewContainer').style.display = 'none';
+                    document.getElementById('recordedPreview').style.display = 'none';
+                    recordedChunks = [];
+                } else {
+                    alert('등록 실패: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('요청 오류:', error);
+                alert('서버 통신 중 오류가 발생했습니다.');
+            });
+        }
+        
+        // 페이지 로드 시 웹캠 시작
+        window.addEventListener('DOMContentLoaded', startCamera);
+    </script>
+</body>
+</html>

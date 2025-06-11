@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수어 학습 플랫폼</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* 로고 스타일 */
+        .logo-container {
+            margin: 20px 0 40px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .logo {
+            max-width: 300px;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease;
+        }
+        
+        .logo:hover {
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .logo-title {
+            margin-top: 15px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideUp 1s ease-in-out;
+        }
+        
+        .welcome-text {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .welcome-text span {
+            color: #3498db;
+            font-weight: 700;
+        }
+        
+        /* 선택 카드 스타일 */
+        .selection-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .card-content {
+            padding: 30px;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .card-description {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* 푸터 */
+        .footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .selection-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            .logo-title {
+                font-size: 1.8rem;
+            }
+            
+            .welcome-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 로고 영역 -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='image/logo.png') }}" alt="수어 학습 플랫폼 로고" class="logo">
+            <h1 class="logo-title">수어 학습 플랫폼</h1>
+            <p class="logo-subtitle">모두를 위한 손말 배우기</p>
+        </div>
+        
+        <!-- 메인 콘텐츠 -->
+        <div class="main-content">
+            <h2 class="welcome-text">원하시는 기능을 <span>선택</span>해주세요</h2>
+            
+            <div class="selection-cards">
+                <!-- 수어 문장 완성 페이지 카드 -->
+                <div class="card" onclick="location.href='/sentence'">
+                    <div class="card-image" style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">수어 문장 완성</h3>
+                        <p class="card-description">대화에 필요한 다양한 수어 문장을 학습하고 완성해보세요. 일상생활에서 자주 사용하는 표현들을 단계별로 연습할 수 있습니다.</p>
+                        <button class="btn">문장 완성 시작하기</button>
+                    </div>
+                </div>
+                
+                <!-- 수어 추가 페이지 카드 -->
+                <div class="card" onclick="location.href='/add_sign'">
+                    <div class="card-image" style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1607799279861-4dd421887fb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">수어 추가</h3>
+                        <p class="card-description">새로운 수어를 추가하고 공유해보세요. 사용자들이 함께 만들어가는 수어 사전에 기여할 수 있습니다.</p>
+                        <button class="btn">수어 추가하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 -->
+        <div class="footer">
+            <p>© 2025 수어 인식 플랫폼. 모든 권리 보유.</p>
+        </div>
+    </div>
+</body>
+</html>
