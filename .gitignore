@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.vscode/
+venv/
+env/
+*.csv
+*.npy
+*.h5
+static/uploads/
+saved_sentences/
+debug_frames/
+model/
